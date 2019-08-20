@@ -1,4 +1,13 @@
-.App {
+
+.lines {
+  stroke: black;
+  stroke-width:10;
+}
+.lines path{
+  stroke: yellow;
+  stroke-linejoin: round;
+}
+  /* .App {
   text-align: center;
 }
 
@@ -30,4 +39,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */

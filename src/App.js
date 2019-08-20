@@ -4,21 +4,23 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div >
+      <svg width='1000' height='1000'>
+      <g transform='scale(1.5)'>
+        <circle cx='50' cy='50' r='40' />
+        <rect x='100' y='50' width='50' height='20' />
+        <circle cx='50' cy='200' r='40' fill='yellow' />
+        <rect x='100' y='200' width='50' height='20' fill='blue'/>
+        <g transform='translate(20, 300)' fill='green' stroke='red' >
+          <circle cx='50' cy='50' stroke-width='5' r='40' />
+          <rect x='100' y='50' width='50' height='20' />
+        </g>
+        <g class='lines' transform='translate(100, 0)'>
+          <line fill='red' x1='200' y1='20' x2='300' y2='280' ></line>
+          <path fill='none' d='M300 280 L350 200 L350 250 L400 250'></path>
+        </g>
+        </g>
+      </svg>
     </div>
   );
 }
