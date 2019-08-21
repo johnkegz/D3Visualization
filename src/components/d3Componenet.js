@@ -1,11 +1,20 @@
 import React from 'react'
-import { select, json, scaleLinear, max, scaleBand } from 'd3';
+import { 
+    select, 
+    json, 
+    scaleLinear, 
+    max, 
+    scaleBand, 
+    axisLeft,
+    axisBottom
+} from 'd3';
+// import './d3Component.scss';
 
 const d3Component = () => {
     // constants
     const svgWidth = '1000';
     const svgHeight = '300';
-    const margin = { top: 20, left:20, bottom:20, right:20 };
+    const margin = { top: 20, left:100, bottom:20, right:20 };
     const innerWidth = svgWidth - margin.left - margin.right; 
     const innerHeight = svgHeight - margin.top - margin.bottom; 
 
@@ -32,7 +41,7 @@ const d3Component = () => {
         const xScale = scaleLinear()
             .domain([0, max(data, xValue)])
             .range([0, innerWidth])
-            
+
         /** 
          * make y Scale using scaleBand
          * it consists of the the domain and the range
@@ -40,9 +49,16 @@ const d3Component = () => {
         const yScale = scaleBand()
             .domain(data.map(yValue))
             .range([0, innerHeight])
+            .padding(.2)
+        
         //Add a group element to gropu the rectangles
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        
+        //call axisLeft and axisBottom
+        g.append('g').call(axisLeft(yScale))
+        g.append('g').call(axisBottom(xScale))
+            .attr('transform', `translate(0, ${innerHeight})`)
         //make a data join to create a rectangles
         g.selectAll('rect')
             .data(data)
@@ -51,9 +67,10 @@ const d3Component = () => {
             .attr('y', d => yScale(yValue(d)))
             .attr('width', d => xScale(xValue(d)))
             .attr('height', yScale.bandwidth())
+            .attr('fill', 'steelBlue')
     }
 
-    //making a request to backend to get the json data to display on the graph
+        //making a request to backend to get the json data to display on the graph
         json('http://localhost:8000/people/d3data' ).then(data => {
             data.forEach(d => {
                 d.population = d.population * 1000;
