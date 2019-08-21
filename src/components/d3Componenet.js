@@ -3,8 +3,11 @@ import { select, json, scaleLinear, max, scaleBand } from 'd3';
 
 const d3Component = () => {
     // constants
-    const svgWidth = 1000;
-    const svgHeight = 300;
+    const svgWidth = '1000';
+    const svgHeight = '300';
+    const margin = { top: 20, left:20, bottom:20, right:20 };
+    const innerWidth = svgWidth - margin.left - margin.right; 
+    const innerHeight = svgHeight - margin.top - margin.bottom; 
 
 
     //selecting the svg element from DOM and adding attributes to it
@@ -20,6 +23,7 @@ const d3Component = () => {
         //Add value accessors
         const xValue = d => d.population;
         const yValue = d => d.country
+        
         /** 
          * make x Scale using scaleBand
          * it consists of the the domain and the range
@@ -27,7 +31,7 @@ const d3Component = () => {
 
         const xScale = scaleLinear()
             .domain([0, max(data, xValue)])
-            .range([0, svgWidth])
+            .range([0, innerWidth])
             
         /** 
          * make y Scale using scaleBand
@@ -35,10 +39,12 @@ const d3Component = () => {
         */
         const yScale = scaleBand()
             .domain(data.map(yValue))
-            .range([0, svgHeight])
-            
+            .range([0, innerHeight])
+        //Add a group element to gropu the rectangles
+        const g = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
         //make a data join to create a rectangles
-        svg.selectAll('rect')
+        g.selectAll('rect')
             .data(data)
             .enter()
             .append('rect')
