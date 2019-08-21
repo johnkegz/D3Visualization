@@ -1,5 +1,5 @@
 import React from 'react'
-import { select, json } from 'd3';
+import { select, json, scaleLinear, max, scaleBand } from 'd3';
 
 const d3Component = () => {
     // constants
@@ -12,15 +12,39 @@ const d3Component = () => {
         .attr('width', +svgWidth)
         .attr('height', +svgHeight)
         .style('background-color','red');
-    //Defining the render function
+    /** 
+     * Defining the render function
+     * 
+     * */
     const render = data => {
+        //Add value accessors
+        const xValue = d => d.population;
+        const yValue = d => d.country
+        /** 
+         * make x Scale using scaleBand
+         * it consists of the the domain and the range
+        */
+
+        const xScale = scaleLinear()
+            .domain([0, max(data, xValue)])
+            .range([0, svgWidth])
+            
+        /** 
+         * make y Scale using scaleBand
+         * it consists of the the domain and the range
+        */
+        const yScale = scaleBand()
+            .domain(data.map(yValue))
+            .range([0, svgHeight])
+            
         //make a data join to create a rectangles
         svg.selectAll('rect')
             .data(data)
             .enter()
             .append('rect')
-            .attr('width', 300)
-            .attr('height', 300)
+            .attr('y', d => yScale(yValue(d)))
+            .attr('width', d => xScale(xValue(d)))
+            .attr('height', yScale.bandwidth())
     }
 
     //making a request to backend to get the json data to display on the graph
