@@ -5,6 +5,7 @@ import './App.css';
 function App() {
   return (
     <div >
+    <h1>D3.js example</h1>
       <svg width='1000' height='1000'>
       <g transform='scale(1.5)'>
         <circle cx='50' cy='50' r='40' />
