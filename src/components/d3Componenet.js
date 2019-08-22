@@ -3,8 +3,7 @@ import {
     select, 
     json, 
     scaleLinear, 
-    max, 
-    scalePoint, 
+    extent,
     axisLeft,
     axisBottom,
     format
@@ -30,9 +29,16 @@ const d3Component = () => {
      * 
      * */
     const render = data => {
+                // d.mpg = +d.mpg;
+                // d.cylinders= +d.cylinders;
+                // d.displacement= +d.displacement;
+                // d.horsePower= +d.horsePower;
+                // d.weight= +d.weight;
+                // d.acceleration= +d.acceleration;
+                // d.year= +d.year;
         //Add value accessors
-        const xValue = d => d.population;
-        const yValue = d => d.country
+        const xValue = d => d.horsePower;
+        const yValue = d => d.cylinders;
         
         /** 
          * make x Scale using scaleLinear
@@ -40,7 +46,7 @@ const d3Component = () => {
         */
 
         const xScale = scaleLinear()
-            .domain([0, max(data, xValue)])
+            .domain(extent(data, xValue))
             .range([0, innerWidth])
             .nice()
 
@@ -48,10 +54,9 @@ const d3Component = () => {
          * make y Scale using scalePoint
          * it consists of the the domain and the range
         */
-        const yScale = scalePoint()
-            .domain(data.map(yValue))
+        const yScale = scaleLinear()
+        .domain(extent(data, yValue))
             .range([0, innerHeight])
-            .padding(.5)
         
         //Add a group element to group the rectangles
         const g = svg.append('g')
@@ -101,8 +106,15 @@ const d3Component = () => {
 
         //making a request to backend to get the json data to display on the graph
         json('http://localhost:8000/people/d3data' ).then(data => {
+            console.log('data', data);
             data.forEach(d => {
-                d.population = d.population * 1000;
+                d.mpg = +d.mpg;
+                d.cylinders= +d.cylinders;
+                d.displacement= +d.displacement;
+                d.horsePower= +d.horsePower;
+                d.weight= +d.weight;
+                d.acceleration= +d.acceleration;
+                d.year= +d.year;
             })
             //call render function to display the data
             render(data);
