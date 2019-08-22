@@ -5,6 +5,7 @@ import {
     scaleLinear,
     scaleTime, 
     extent,
+    max,
     axisLeft,
     axisBottom,
     area,
@@ -54,7 +55,7 @@ const d3Component = () => {
          * it consists of the the domain and the range
         */
         const yScale = scaleLinear()
-        .domain(extent(data, yValue))
+        .domain([0, max(data, yValue)])
             .range([innerHeight, 0])
             .nice()
         
@@ -64,7 +65,7 @@ const d3Component = () => {
         
         //call axisLeft and axisBottom
         const xAxis = axisBottom(xScale)
-                    .ticks(2)
+                    .ticks(8)
                     .tickSize(-innerHeight)
                     .tickPadding(5);
         const yAxis = axisLeft(yScale)
