@@ -4,7 +4,7 @@ import {
     json, 
     scaleLinear, 
     max, 
-    scaleBand, 
+    scalePoint, 
     axisLeft,
     axisBottom,
     format
@@ -35,22 +35,23 @@ const d3Component = () => {
         const yValue = d => d.country
         
         /** 
-         * make x Scale using scaleBand
+         * make x Scale using scaleLinear
          * it consists of the the domain and the range
         */
 
         const xScale = scaleLinear()
             .domain([0, max(data, xValue)])
             .range([0, innerWidth])
+            .nice()
 
         /** 
-         * make y Scale using scaleBand
+         * make y Scale using scalePoint
          * it consists of the the domain and the range
         */
-        const yScale = scaleBand()
+        const yScale = scalePoint()
             .domain(data.map(yValue))
             .range([0, innerHeight])
-            .padding(.2)
+            .padding(.5)
         
         //Add a group element to group the rectangles
         const g = svg.append('g')
@@ -63,9 +64,11 @@ const d3Component = () => {
         const xAxis = axisBottom(xScale)
                         .tickFormat(xAxisTickFormat)
                         .tickSize(-innerHeight);
+        const yAxis = axisLeft(yScale)
+                    .tickSize(-innerWidth);
         g.append('g')
-            .call(axisLeft(yScale))
-            .selectAll('.domain, .tick line')
+            .call(yAxis)
+            .selectAll('.domain')
             .remove()
 
         //x Axis group
@@ -83,13 +86,13 @@ const d3Component = () => {
             .text('population')
             .attr('fill', 'black')
         //make a data join to create a rectangles
-        g.selectAll('rect')
+        g.selectAll('circle')
             .data(data)
             .enter()
-            .append('rect')
-            .attr('y', d => yScale(yValue(d)))
-            .attr('width', d => xScale(xValue(d)))
-            .attr('height', yScale.bandwidth())
+            .append('circle')
+            .attr('cy', d => yScale(yValue(d)))
+            .attr('cx', d => xScale(xValue(d)))
+            .attr('r', 10)
         g.append('text')
             .attr('class', 'title')
             .attr('x', 150)
