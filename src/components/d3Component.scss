@@ -8,25 +8,26 @@ text{
 
 .tick text{
     font-size: 2em;
-    fill: white
+    fill: black
 }
 
 .tick line{
-    stroke: #C0C0BB
+    stroke: black
 }
 
 .x-axis-label{
     font-size: 3em;
-    fill: white
+    fill: black
 }
 
 .title{
     font-size: 2em;
-    fill: white  
+    fill: black 
 }
 .line-path{
-    fill: blue;
+    // fill: blue;
     stroke: none;
     stroke-width: 5;
     stroke-linejoin: round;
+    opacity: .5;
 }

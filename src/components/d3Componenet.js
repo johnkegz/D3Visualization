@@ -3,6 +3,8 @@ import {
     select, 
     json, 
     scaleLinear,
+    scaleOrdinal,
+    schemeCategory10,
     scaleTime, 
     extent,
     max,
@@ -29,6 +31,8 @@ const d3Component = () => {
     const circleRadius = 5;
     const xAxisLabel = 'time'
     const yAxisLabel = 'number'
+
+    const colorValue = d => d.type 
 
 
     //selecting the svg element from DOM and adding attributes to it
@@ -59,6 +63,11 @@ const d3Component = () => {
         .domain([0, max(data, yValue)])
             .range([innerHeight, 0])
             .nice()
+        //color scale
+        const colorScale = scaleOrdinal()
+            .domain(["onBoarding", "offboarding"])
+            .range(["#FAEBD7", "#7FFFD4"]);
+       
         
         //Add a group element to group the rectangles
         const g = svg.append('g')
@@ -108,15 +117,20 @@ const d3Component = () => {
             .y0(innerHeight)
             .y1(d => yScale(yValue(d)))
             .curve(curveMonotoneX);
-        
+        //nest for multiple lines
         const nested = nest()
-                .key(d => d.type)
+                .key(colorValue)
                 .entries(data);
 
-        console.log('data', nested);
-        g.append('path')
+        colorScale.domain(nested.map(d => d.key))
+
+        g.selectAll('.line-path')
+            .data(nested)
+            .enter()
+            .append('path')
             .attr('class', 'line-path')
-            .attr('d', areaGenerator(data))
+            .attr('d', d => areaGenerator(d.values))
+            .attr('fill', d => colorScale(d.key))
         
         //make a data join to create a rectangles
         g.selectAll('circle')
