@@ -3,6 +3,24 @@ rect {
 }
 
 text{
-    font-size: 2em;
     font-family: sans-serif
+}
+
+.tick text{
+    font-size: 2em;
+    fill: white
+}
+
+.tick line{
+    stroke: #C0C0BB
+}
+
+.x-axis-label{
+    font-size: 3em;
+    fill: white
+}
+
+.title{
+    font-size: 3em;
+    fill: white  
 }

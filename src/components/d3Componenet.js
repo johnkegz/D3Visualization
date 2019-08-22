@@ -25,7 +25,6 @@ const d3Component = () => {
         .attr('width', +svgWidth)
         .attr('height', +svgHeight)
         .style('background-color','grey')
-        .style('color','white');
     /** 
      * Defining the render function
      * 
@@ -62,20 +61,23 @@ const d3Component = () => {
                                     format('.3s')(number)
                                     .replace('G', 'B');
         const xAxis = axisBottom(xScale)
-                        .tickFormat(xAxisTickFormat);
+                        .tickFormat(xAxisTickFormat)
+                        .tickSize(-innerHeight);
         g.append('g')
             .call(axisLeft(yScale))
             .selectAll('.domain, .tick line')
             .remove()
 
         //x Axis group
-        const xAxisG = g.append('g').call(xAxis)
+        const xAxisG = g.append('g')
+            .call(xAxis)
             .attr('transform', `translate(0, ${innerHeight})`)
         //remove x axis line 
         xAxisG.select('.domain')
             .remove()
         //Add x Axis Label
         xAxisG.append('text')
+            .attr('class', 'x-axis-label')
             .attr('y', 39)
             .attr('x', innerWidth/2)
             .text('population')
@@ -89,7 +91,8 @@ const d3Component = () => {
             .attr('width', d => xScale(xValue(d)))
             .attr('height', yScale.bandwidth())
         g.append('text')
-            .attr('x', 250)
+            .attr('class', 'title')
+            .attr('x', 150)
             .text('10 most populous countries')
     }
 
