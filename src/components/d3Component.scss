@@ -21,6 +21,12 @@ text{
 }
 
 .title{
-    font-size: 3em;
+    font-size: 2em;
     fill: white  
+}
+.line-path{
+    fill:none;
+    stroke: red;
+    stroke-width: 5;
+    stroke-linejoin: round;
 }

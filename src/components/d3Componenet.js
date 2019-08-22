@@ -2,21 +2,31 @@ import React from 'react'
 import { 
     select, 
     json, 
-    scaleLinear, 
+    scaleLinear,
+    scaleTime, 
     extent,
     axisLeft,
     axisBottom,
-    format
+    line,
+    curveMonotoneX
 } from 'd3';
 import './d3Component.scss';
 
 const d3Component = () => {
+    //Add value accessors
+    const xValue = d => d.time;
+    const yValue = d => d.number;
+    
     // constants
+    const title = 'number vs time'
     const svgWidth = '1000';
     const svgHeight = '300';
     const margin = { top: 24, left:100, bottom:50, right:20 };
     const innerWidth = svgWidth - margin.left - margin.right; 
-    const innerHeight = svgHeight - margin.top - margin.bottom; 
+    const innerHeight = svgHeight - margin.top - margin.bottom;
+    const circleRadius = 5;
+    const xAxisLabel = 'time'
+    const yAxisLabel = 'number'
 
 
     //selecting the svg element from DOM and adding attributes to it
@@ -29,23 +39,12 @@ const d3Component = () => {
      * 
      * */
     const render = data => {
-                // d.mpg = +d.mpg;
-                // d.cylinders= +d.cylinders;
-                // d.displacement= +d.displacement;
-                // d.horsePower= +d.horsePower;
-                // d.weight= +d.weight;
-                // d.acceleration= +d.acceleration;
-                // d.year= +d.year;
-        //Add value accessors
-        const xValue = d => d.horsePower;
-        const yValue = d => d.cylinders;
-        
         /** 
          * make x Scale using scaleLinear
          * it consists of the the domain and the range
         */
 
-        const xScale = scaleLinear()
+        const xScale = scaleTime()
             .domain(extent(data, xValue))
             .range([0, innerWidth])
             .nice()
@@ -56,25 +55,35 @@ const d3Component = () => {
         */
         const yScale = scaleLinear()
         .domain(extent(data, yValue))
-            .range([0, innerHeight])
+            .range([innerHeight, 0])
+            .nice()
         
         //Add a group element to group the rectangles
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
         
         //call axisLeft and axisBottom
-        const xAxisTickFormat = number => 
-                                    format('.3s')(number)
-                                    .replace('G', 'B');
         const xAxis = axisBottom(xScale)
-                        .tickFormat(xAxisTickFormat)
-                        .tickSize(-innerHeight);
+                    .tickSize(-innerHeight)
+                    .tickPadding(5);
         const yAxis = axisLeft(yScale)
-                    .tickSize(-innerWidth);
-        g.append('g')
-            .call(yAxis)
-            .selectAll('.domain')
+                    .tickSize(-innerWidth)
+                    .tickPadding(5);
+
+        const yAxisG = g.append('g')
+        .call(yAxis)
+        
+        yAxisG.selectAll('.domain')
             .remove()
+        //yAxis group
+        yAxisG.append('text')
+            .attr('class', 'x-axis-label')
+            .attr('y', -60)
+            .attr('x', -innerHeight /2)
+            .text(yAxisLabel)
+            .attr('transform', `rotate(-90)`)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'black')
 
         //x Axis group
         const xAxisG = g.append('g')
@@ -88,8 +97,16 @@ const d3Component = () => {
             .attr('class', 'x-axis-label')
             .attr('y', 39)
             .attr('x', innerWidth/2)
-            .text('population')
+            .text(xAxisLabel)
             .attr('fill', 'black')
+        //Add line
+        const lineGenerator = line()
+            .x(d => xScale(xValue(d)))
+            .y(d => yScale(yValue(d)))
+            .curve(curveMonotoneX);
+        g.append('path')
+            .attr('class', 'line-path')
+            .attr('d', lineGenerator(data))
         //make a data join to create a rectangles
         g.selectAll('circle')
             .data(data)
@@ -97,25 +114,21 @@ const d3Component = () => {
             .append('circle')
             .attr('cy', d => yScale(yValue(d)))
             .attr('cx', d => xScale(xValue(d)))
-            .attr('r', 10)
+            .attr('r', circleRadius)
         g.append('text')
             .attr('class', 'title')
-            .attr('x', 150)
-            .text('10 most populous countries')
+            .attr('x', 250)
+            .text(title)
     }
 
         //making a request to backend to get the json data to display on the graph
         json('http://localhost:8000/people/d3data' ).then(data => {
-            console.log('data', data);
+            
             data.forEach(d => {
-                d.mpg = +d.mpg;
-                d.cylinders= +d.cylinders;
-                d.displacement= +d.displacement;
-                d.horsePower= +d.horsePower;
-                d.weight= +d.weight;
-                d.acceleration= +d.acceleration;
-                d.year= +d.year;
+                d.number = +d.number;
+                d.time = new Date(d.createdAt);
             })
+            console.log('data', data);
             //call render function to display the data
             render(data);
         });
