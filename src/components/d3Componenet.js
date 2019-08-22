@@ -79,6 +79,9 @@ const d3Component = () => {
             .attr('y', d => yScale(yValue(d)))
             .attr('width', d => xScale(xValue(d)))
             .attr('height', yScale.bandwidth())
+        g.append('text')
+            .attr('x', 350)
+            .text('10 most populus countries')
     }
 
         //making a request to backend to get the json data to display on the graph
