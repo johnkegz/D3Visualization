@@ -7,7 +7,7 @@ import {
     extent,
     axisLeft,
     axisBottom,
-    line,
+    area,
     curveMonotoneX
 } from 'd3';
 import './d3Component.scss';
@@ -47,7 +47,7 @@ const d3Component = () => {
         const xScale = scaleTime()
             .domain(extent(data, xValue))
             .range([0, innerWidth])
-            .nice()
+            // .nice()
 
         /** 
          * make y Scale using scalePoint
@@ -64,6 +64,7 @@ const d3Component = () => {
         
         //call axisLeft and axisBottom
         const xAxis = axisBottom(xScale)
+                    .ticks(2)
                     .tickSize(-innerHeight)
                     .tickPadding(5);
         const yAxis = axisLeft(yScale)
@@ -100,13 +101,14 @@ const d3Component = () => {
             .text(xAxisLabel)
             .attr('fill', 'black')
         //Add line
-        const lineGenerator = line()
+        const areaGenerator = area()
             .x(d => xScale(xValue(d)))
-            .y(d => yScale(yValue(d)))
+            .y0(innerHeight)
+            .y1(d => yScale(yValue(d)))
             .curve(curveMonotoneX);
         g.append('path')
             .attr('class', 'line-path')
-            .attr('d', lineGenerator(data))
+            .attr('d', areaGenerator(data))
         //make a data join to create a rectangles
         g.selectAll('circle')
             .data(data)
