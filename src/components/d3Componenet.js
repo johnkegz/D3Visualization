@@ -15,7 +15,7 @@ const d3Component = () => {
     // constants
     const svgWidth = '1000';
     const svgHeight = '300';
-    const margin = { top: 20, left:100, bottom:20, right:20 };
+    const margin = { top: 24, left:100, bottom:50, right:20 };
     const innerWidth = svgWidth - margin.left - margin.right; 
     const innerHeight = svgHeight - margin.top - margin.bottom; 
 
@@ -67,10 +67,19 @@ const d3Component = () => {
             .call(axisLeft(yScale))
             .selectAll('.domain, .tick line')
             .remove()
-        g.append('g').call(xAxis)
+
+        //x Axis group
+        const xAxisG = g.append('g').call(xAxis)
             .attr('transform', `translate(0, ${innerHeight})`)
-            .select('.domain')
+        //remove x axis line 
+        xAxisG.select('.domain')
             .remove()
+        //Add x Axis Label
+        xAxisG.append('text')
+            .attr('y', 39)
+            .attr('x', innerWidth/2)
+            .text('population')
+            .attr('fill', 'black')
         //make a data join to create a rectangles
         g.selectAll('rect')
             .data(data)
@@ -80,8 +89,8 @@ const d3Component = () => {
             .attr('width', d => xScale(xValue(d)))
             .attr('height', yScale.bandwidth())
         g.append('text')
-            .attr('x', 350)
-            .text('10 most populus countries')
+            .attr('x', 250)
+            .text('10 most populous countries')
     }
 
         //making a request to backend to get the json data to display on the graph
