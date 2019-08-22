@@ -63,9 +63,14 @@ const d3Component = () => {
                                     .replace('G', 'B');
         const xAxis = axisBottom(xScale)
                         .tickFormat(xAxisTickFormat);
-        g.append('g').call(axisLeft(yScale))
+        g.append('g')
+            .call(axisLeft(yScale))
+            .selectAll('.domain, .tick line')
+            .remove()
         g.append('g').call(xAxis)
             .attr('transform', `translate(0, ${innerHeight})`)
+            .select('.domain')
+            .remove()
         //make a data join to create a rectangles
         g.selectAll('rect')
             .data(data)
