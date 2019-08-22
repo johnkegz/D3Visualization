@@ -9,7 +9,8 @@ import {
     axisLeft,
     axisBottom,
     area,
-    curveMonotoneX
+    curveMonotoneX,
+    nest
 } from 'd3';
 import './d3Component.scss';
 
@@ -107,9 +108,16 @@ const d3Component = () => {
             .y0(innerHeight)
             .y1(d => yScale(yValue(d)))
             .curve(curveMonotoneX);
+        
+        const nested = nest()
+                .key(d => d.type)
+                .entries(data);
+
+        console.log('data', nested);
         g.append('path')
             .attr('class', 'line-path')
             .attr('d', areaGenerator(data))
+        
         //make a data join to create a rectangles
         g.selectAll('circle')
             .data(data)
